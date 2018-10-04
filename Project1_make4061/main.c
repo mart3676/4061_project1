@@ -167,10 +167,10 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 					exit(-1);
 				}
 				if (childPIDorZero != 0) {
-					printf("I'm the parent %d, my child is %d\n", getpid(), childPIDorZero);
+					//printf("I'm the parent %d, my child is %d\n", getpid(), childPIDorZero);
 					wait(NULL); // wait to join w/ parent
 				} else {
-					printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
+					//printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
 					helper1(targets, myTarget.DependencyNames[j], nTargetCount1);
 					//execl("/")
 					exit(0);
@@ -203,6 +203,9 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 			execl(myTarget.Command,NULL);
 
 			}
+		}else{
+			printf("exec call:  %s %d\n", myTarget.Command, getpid());
+			execl(myTarget.Command,NULL);
 		}
 	}
 }
