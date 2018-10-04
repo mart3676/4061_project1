@@ -20,6 +20,8 @@
 void show_error_message(char * ExecName);
 //Write your functions prototypes here
 void show_targets(target_t targets[], int nTargetCount);
+
+void helper1(target_t targets[], int index, int nTargetCount);
 /*-------------------------------------------------------END OF HELPER FUNCTIONS PROTOTYPES--------------------------*/
 
 
@@ -40,8 +42,19 @@ void show_error_message(char * ExecName)
 //Phase1: Warmup phase for parsing the structure here. Do it as per the PDF (Writeup)
 void show_targets(target_t targets[], int nTargetCount)
 {
-	//Write your warmup code here
-	
+	for (int i = 0; i < nTargetCount; i++) {
+		printf("Target Name: %s \n", targets[i].TargetName);
+
+		printf("Dependency Count: %d\n", targets[i].DependencyCount );
+
+		printf("Dependency Names:" );
+		for(int j = 0; j < targets[i].DependencyCount-1; j++){
+			printf(" %s,", targets[i].DependencyNames[j]);
+		}
+		printf(" %s\n", targets[i].DependencyNames[targets[i].DependencyCount-1]);
+
+		printf("Command: %s \n\n", targets[i].Command);
+	}
 }
 
 /*-------------------------------------------------------END OF HELPER FUNCTIONS-------------------------------------*/
@@ -104,9 +117,9 @@ int main(int argc, char *argv[])
   //Phase1: Warmup-----------------------------------------------------------------------------------------------------
   //Parse the structure elements and print them as mentioned in the Project Writeup
   /* Comment out the following line before Phase2 */
-  show_targets(targets, nTargetCount);  
+  //show_targets(targets, nTargetCount);
   //End of Warmup------------------------------------------------------------------------------------------------------
-   
+
   /*
    * Set Targetname
    * If target is not set, set it to default (first target from makefile)
@@ -124,16 +137,71 @@ int main(int argc, char *argv[])
    * etc. Else if no target is mentioned then build the first target
    * found in Makefile.
    */
-	
+
   //Phase2: Begins ----------------------------------------------------------------------------------------------------
   /*Your code begins here*/
-  
-  
-  
-  
+
+	//targets[0].TargetName;
+  printf("%s\n", targets[0].DependencyNames[1]);
+
+	//helper1(targets, 0, nTargetCount);
+
+
   /*End of your code*/
   //End of Phase2------------------------------------------------------------------------------------------------------
 
   return 0;
 }
 /*-------------------------------------------------------END OF MAIN PROGRAM------------------------------------------*/
+
+void helper1( target_t targets[], char * targetNamee[]){
+
+
+	//find the target exist in targets array
+	int result = find_target(targetNamee, )
+
+  if () {
+		//target not exit then error
+	}if(){
+		//does target up to date?
+	}else{
+		for(){
+		// for all dependencies
+		if() //check if it is target
+			{//call fork
+				// in child with reccursive call
+				//wait in parent
+			}else{
+				//check does file exist if not show error
+			}
+	}
+	//exec parent
+	//if cannot be compiled because of buggy code, then show error
+	}
+
+
+
+
+
+
+		for(int j = 0; j < targets[index].DependencyCount; j++){
+			int idx = find_target(targets[index].DependencyNames[j], targets, nTargetCount);
+			if (idx == -1){
+				int exist = does_file_exist(targets[index].DependencyNames[j]); // find it from real file
+				if(exist == -1){
+					printf("%s: File does not exist \n", targets[index].DependencyNames[j]);
+				}
+				else if(j == targets[index].DependencyCount - 1){
+					printf("%s You reached the end of file \n", targets[index].Command);
+				}
+			}
+			else{
+				helper1(targets, idx, nTargetCount);
+				if(j == targets[index].DependencyCount - 1){
+				printf("%s You reached the end of file \n", targets[index].Command);
+				}
+			}
+		}
+
+
+}
