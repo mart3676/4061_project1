@@ -200,12 +200,34 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 
 		if(isNeedToUpDate == 1){
 			printf("exec call:  %s %d\n", myTarget.Command, getpid());
-			execl(myTarget.Command,NULL);
+			char *argvs[ARG_MAX];
+			char * delimm = " ";
+			int indexOfArg = parse_into_tokens(myTarget.Command, argvs, delimm);
+			char* commandArray[indexOfArg];
+			char* cmdd = argvs[0];
+			printf("%s\n",cmdd );
+			for(int k = 0; k < indexOfArg; k++){
+				commandArray[k] = argvs[k+1];
+				printf("%s\n", argvs[k+1]);
+			}
+			execvp(cmdd, commandArray);
 
 			}
 		}else{
 			printf("exec call:  %s %d\n", myTarget.Command, getpid());
-			execl(myTarget.Command,NULL);
+			char *argvs[ARG_MAX];
+			char * delimm = " ";
+			int indexOfArg = parse_into_tokens(myTarget.Command, argvs, delimm);
+			char* commandArray[indexOfArg];
+			char* cmdd = argvs[0];
+			printf("%s\n", cmdd);
+			for(int k = 0; k < indexOfArg; k++){
+				commandArray[k] = argvs[k+1];
+				printf("%s\n", argvs[k+1]);
+			}
+			execvp(cmdd, commandArray);
+
+			//What is the correct format of execution function? Does it return something when execution failed?
 		}
 	}
 }
