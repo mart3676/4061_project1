@@ -149,6 +149,7 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 		//target not exit then error
 		printf("error\n" );
 	}else{
+
 		for(int j = 0; j < myTarget.DependencyCount; j++){
 			//distinguish .o and .c file
 			int isDepTarget = find_target(myTarget.DependencyNames[j], targets, nTargetCount1);
@@ -170,11 +171,15 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 					wait(NULL); // wait to join w/ parent
 				} else {
 					printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
+					helper1(targets, myTarget.DependencyNames[j], nTargetCount1);
 					//execl("/")
+					exit(0);
 				}
-				helper1(targets, myTarget.DependencyNames[j], nTargetCount1);
+
+
 			}
 		}
+
 		int resultFileExist = does_file_exist(targetNamee);
 		int isNeedToUpDate = 1;
 		if(resultFileExist != -1){ // file compiled before
@@ -194,7 +199,9 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
  			}
 
 		if(isNeedToUpDate == 1){
-			printf("exec call:  %s\n", myTarget.Command);
+			printf("exec call:  %s %d\n", myTarget.Command, getpid());
+			execl(myTarget.Command,NULL);
+
 			}
 		}
 	}
