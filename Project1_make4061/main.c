@@ -18,10 +18,9 @@
 
 /*-------------------------------------------------------HELPER FUNCTIONS PROTOTYPES---------------------------------*/
 void show_error_message(char * ExecName);
+void helper1( target_t targets[], char * targetNamee, int nTargetCount1);
 //Write your functions prototypes here
 void show_targets(target_t targets[], int nTargetCount);
-
-void helper1(target_t targets[], int index, int nTargetCount);
 /*-------------------------------------------------------END OF HELPER FUNCTIONS PROTOTYPES--------------------------*/
 
 
@@ -42,19 +41,8 @@ void show_error_message(char * ExecName)
 //Phase1: Warmup phase for parsing the structure here. Do it as per the PDF (Writeup)
 void show_targets(target_t targets[], int nTargetCount)
 {
-	for (int i = 0; i < nTargetCount; i++) {
-		printf("Target Name: %s \n", targets[i].TargetName);
+	//Write your warmup code here
 
-		printf("Dependency Count: %d\n", targets[i].DependencyCount );
-
-		printf("Dependency Names:" );
-		for(int j = 0; j < targets[i].DependencyCount-1; j++){
-			printf(" %s,", targets[i].DependencyNames[j]);
-		}
-		printf(" %s\n", targets[i].DependencyNames[targets[i].DependencyCount-1]);
-
-		printf("Command: %s \n\n", targets[i].Command);
-	}
 }
 
 /*-------------------------------------------------------END OF HELPER FUNCTIONS-------------------------------------*/
@@ -117,7 +105,7 @@ int main(int argc, char *argv[])
   //Phase1: Warmup-----------------------------------------------------------------------------------------------------
   //Parse the structure elements and print them as mentioned in the Project Writeup
   /* Comment out the following line before Phase2 */
-  //show_targets(targets, nTargetCount);
+  show_targets(targets, nTargetCount);
   //End of Warmup------------------------------------------------------------------------------------------------------
 
   /*
@@ -141,10 +129,7 @@ int main(int argc, char *argv[])
   //Phase2: Begins ----------------------------------------------------------------------------------------------------
   /*Your code begins here*/
 
-	//targets[0].TargetName;
-  printf("%s\n", targets[0].DependencyNames[1]);
-
-	//helper1(targets, 0, nTargetCount);
+helper1(targets, TargetName, nTargetCount);
 
 
   /*End of your code*/
@@ -154,54 +139,52 @@ int main(int argc, char *argv[])
 }
 /*-------------------------------------------------------END OF MAIN PROGRAM------------------------------------------*/
 
-void helper1( target_t targets[], char * targetNamee[]){
+void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 
 
 	//find the target exist in targets array
-	int result = find_target(targetNamee, )
-
-  if () {
+	int result = find_target(targetNamee, targets, nTargetCount1);
+	target_t myTarget = targets[result];
+  if (result == -1) {
 		//target not exit then error
-	}if(){
-		//does target up to date?
+		printf("error\n" );
 	}else{
-		for(){
-		// for all dependencies
-		if() //check if it is target
-			{//call fork
-				// in child with reccursive call
-				//wait in parent
-			}else{
-				//check does file exist if not show error
-			}
-	}
-	//exec parent
-	//if cannot be compiled because of buggy code, then show error
-	}
+		for(int j = 0; j < myTarget.DependencyCount; j++){
+			//distinguish .o and .c file
+			int isDepTarget = find_target(myTarget.DependencyNames[j], targets, nTargetCount1);
 
-
-
-
-
-
-		for(int j = 0; j < targets[index].DependencyCount; j++){
-			int idx = find_target(targets[index].DependencyNames[j], targets, nTargetCount);
-			if (idx == -1){
-				int exist = does_file_exist(targets[index].DependencyNames[j]); // find it from real file
-				if(exist == -1){
-					printf("%s: File does not exist \n", targets[index].DependencyNames[j]);
+			if(isDepTarget == -1){// not target case
+				int result2 = does_file_exist(myTarget.DependencyNames[j]);
+				if (result2 == -1){
+					//file does not exist error
+					printf("error\n" );
 				}
-				else if(j == targets[index].DependencyCount - 1){
-					printf("%s You reached the end of file \n", targets[index].Command);
-				}
-			}
-			else{
-				helper1(targets, idx, nTargetCount);
-				if(j == targets[index].DependencyCount - 1){
-				printf("%s You reached the end of file \n", targets[index].Command);
-				}
+			}else{ // dependency is target
+				helper1(targets, myTarget.DependencyNames[j], nTargetCount1);
 			}
 		}
+		int resultFileExist = does_file_exist(targetNamee);
+		int isNeedToUpDate = 1;
+		if(resultFileExist != -1){ // file compiled before
+		 	//find edited file and compare with this file time
 
+		 	for(int j = 0; j < myTarget.DependencyCount; j++){
+ 				int modficationNeed = compare_modification_time(targetNamee, myTarget.DependencyNames[j]);
+				if(modficationNeed == -1){
+					//file does not exist
+					isNeedToUpDate = 0;
+					printf("error\n");
+				}else if(modficationNeed == 0 || modficationNeed == 2){
+					//up to date
+					isNeedToUpDate = 0;
+					printf("Up to date\n" );
+				}
+ 			}
 
+		if(isNeedToUpDate == 1){
+			printf("exec call:  %s\n", myTarget.Command);
+			}
+		}
+	}
 }
+
