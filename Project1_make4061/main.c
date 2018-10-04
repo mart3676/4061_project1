@@ -160,6 +160,18 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 					printf("error\n" );
 				}
 			}else{ // dependency is target
+				pid_t childPIDorZero = fork();
+				if (childPIDorZero < 0) {
+					perror("fork() error");
+					exit(-1);
+				}
+				if (childPIDorZero != 0) {
+					printf("I'm the parent %d, my child is %d\n", getpid(), childPIDorZero);
+					wait(NULL); // wait to join w/ parent
+				} else {
+					printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
+					//execl("/")
+				}
 				helper1(targets, myTarget.DependencyNames[j], nTargetCount1);
 			}
 		}
@@ -187,4 +199,3 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 		}
 	}
 }
-
