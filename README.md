@@ -1,8 +1,12 @@
 /* CSci4061 F2018 Assignment 1
-* login: cselabs_login_name ()
+* login: battu010
 * date: 10/05/2018
 * Ganzorig Battur, Patrice Martineau, Raymond Holidjaja
 * id: battu010, mart3676, holid019 */
+
+We use csel-kh4250-38.cselabs.umn.edu to test our program. 
+
+The most difficult part is the reccursive helper1 function. This function will check all dependencies and made recurrsive call for each of the target dependencies. After checking all dependencies, it will check for the file existence and compare modification time. At the end of this function, it call fork and execvp in child processor and wait while child processor run.
 
 Ganzorig wrote the helper function in the main program, and implemented the main function calls on the program and worked with Patrice on the fork/wait/exec calls within the main.c file, and debugging Phase 2. 
 
