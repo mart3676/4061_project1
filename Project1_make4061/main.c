@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 
   //Phase2: Begins ----------------------------------------------------------------------------------------------------
   /*Your code begins here*/
-
+printf("hello\n");
 helper1(targets, TargetName, nTargetCount);
 
 
@@ -140,39 +140,37 @@ helper1(targets, TargetName, nTargetCount);
 /*-------------------------------------------------------END OF MAIN PROGRAM------------------------------------------*/
 
 void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
-
-
-	//find the target exist in targets array
+																	//find the target exist in targets array
 	int result = find_target(targetNamee, targets, nTargetCount1);
 	target_t myTarget = targets[result];
-  if (result == -1) {
-		//target not exit then error
-		printf("error\n" );
-	}else{
 
-		for(int j = 0; j < myTarget.DependencyCount; j++){
-			//distinguish .o and .c file
+  if (result == -1) {
+																			//target not exit then error
+		printf("error\n" );
+	} else {
+
+		for (int j = 0; j < myTarget.DependencyCount; j++) {
+																			//distinguish .o and .c file
 			int isDepTarget = find_target(myTarget.DependencyNames[j], targets, nTargetCount1);
 
-			if(isDepTarget == -1){// not target case
+			if(isDepTarget == -1){					// not target case
 				int result2 = does_file_exist(myTarget.DependencyNames[j]);
-				if (result2 == -1){
-					//file does not exist error
+
+				if (result2 == -1) {				// file doesn't exist error
 					printf("error\n" );
 				}
-			}else{ // dependency is target
+			} else { 											// dependency is target
 				pid_t childPIDorZero = fork();
+
 				if (childPIDorZero < 0) {
 					perror("fork() error");
 					exit(-1);
 				}
+
 				if (childPIDorZero != 0) {
-					//printf("I'm the parent %d, my child is %d\n", getpid(), childPIDorZero);
-					wait(NULL); // wait to join w/ parent
+					wait(NULL); 							// wait to join w/ parent
 				} else {
-					//printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
 					helper1(targets, myTarget.DependencyNames[j], nTargetCount1);
-					//execl("/")
 					exit(0);
 				}
 
@@ -182,51 +180,65 @@ void helper1( target_t targets[], char * targetNamee, int nTargetCount1){
 
 		int resultFileExist = does_file_exist(targetNamee);
 		int isNeedToUpDate = 1;
-		if(resultFileExist != -1){ // file compiled before
-		 	//find edited file and compare with this file time
 
-		 	for(int j = 0; j < myTarget.DependencyCount; j++){
+		if(resultFileExist != -1){ 		// file compiled before
+		 												//find edited file and compare with this file time
+
+		 	for (int j = 0; j < myTarget.DependencyCount; j++){
  				int modficationNeed = compare_modification_time(targetNamee, myTarget.DependencyNames[j]);
-				if(modficationNeed == -1){
+
+				if (modficationNeed == -1){ 	// set dependency modification bool
 					//file does not exist
 					isNeedToUpDate = 0;
 					printf("error\n");
-				}else if(modficationNeed == 0 || modficationNeed == 2){
-					//up to date
-					isNeedToUpDate = 0;
+				} else if (modficationNeed == 0 || modficationNeed == 1){
+					isNeedToUpDate = 0;				// update not needed
 					printf("Up to date\n" );
 				}
  			}
 
-		if(isNeedToUpDate == 1){
+		if(isNeedToUpDate == 1){            // check if dependency is updated
 			printf("exec call:  %s %d\n", myTarget.Command, getpid());
 			char *argvs[ARG_MAX];
 			char * delimm = " ";
 			int indexOfArg = parse_into_tokens(myTarget.Command, argvs, delimm);
+			printf("%s\n",argvs[indexOfArg]); // why null not show up when we print?
+
 			char* commandArray[indexOfArg];
 			char* cmdd = argvs[0];
 			printf("%s\n",cmdd );
+
 			for(int k = 0; k < indexOfArg; k++){
+				printf("       %d %d\n", indexOfArg, k);
 				commandArray[k] = argvs[k+1];
 				printf("%s\n", argvs[k+1]);
 			}
+
 			execvp(cmdd, commandArray);
+			//execvp(argvs[0], argvs);
 
 			}
-		}else{
+
+		} else {
+																// print args similar to make
 			printf("exec call:  %s %d\n", myTarget.Command, getpid());
 			char *argvs[ARG_MAX];
 			char * delimm = " ";
 			int indexOfArg = parse_into_tokens(myTarget.Command, argvs, delimm);
+			printf("%s\n",argvs[indexOfArg]);
+
 			char* commandArray[indexOfArg];
 			char* cmdd = argvs[0];
 			printf("%s\n", cmdd);
+
 			for(int k = 0; k < indexOfArg; k++){
 				commandArray[k] = argvs[k+1];
 				printf("%s\n", argvs[k+1]);
 			}
-			execvp(cmdd, commandArray);
 
+			printf("%s\n",argvs[indexOfArg]);
+			execvp(cmdd, commandArray);
+			//execvp(argvs[0], argvs);
 			//What is the correct format of execution function? Does it return something when execution failed?
 		}
 	}
