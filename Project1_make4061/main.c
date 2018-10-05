@@ -1,5 +1,5 @@
 /* CSci4061 F2018 Assignment 1
-login: cselabs_login_name ()
+login: battu010
 date: 10/05/2018
 Ganzorig Battur, Patrice Martineau, Raymond Holidjaja
 id: battu010, mart3676, holid019
